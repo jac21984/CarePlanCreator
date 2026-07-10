@@ -1,5 +1,5 @@
 // 🔗 Replace this with your deployed Apps Script Web App URL
-const API = "https://script.google.com/macros/s/AKfycbyZNaVf_WJMsgKsyWYO-N__Fac7lBuHx7x_P2uxZ8HtvrVzsglqQ_KtWt4sFCwY4M9U2w/exec ";
+const API = "https://script.google.com/macros/s/AKfycbzKpLCkIQFbe4XeYWLZ5QRk9mfSkvH2ggt2u2jn6WKbrIWKKXpTrheb2cfot4J7X6oV-Q/exec";
 
 // State
 let selectedTopics = new Set();
