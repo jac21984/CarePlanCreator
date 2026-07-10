@@ -3,35 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title>Care Plan Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-  <header>
-    <h1>Care Plan Builder</h1>
-    <button id="syncBtn">Sync Resources</button>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-circle">LC</div>
+      <div>
+        <h1>Care Plan Builder</h1>
+        <p>Lactation care plans with curated resources</p>
+      </div>
+    </div>
+    <button id="syncBtn" class="btn btn-primary">
+      ⟳ Sync Resources
+    </button>
   </header>
 
-  <main>
+  <main class="app-main">
 
-    <section id="topicSection">
-      <h2>Select Topics</h2>
-      <div id="topicList"></div>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>1. Select Topics</h2>
+        <p>Choose the focus areas for this care plan.</p>
+      </div>
+      <div id="topicList" class="chip-list"></div>
     </section>
 
-    <section id="resourceSection">
-      <h2>Select Resources</h2>
-      <div id="resourceList"></div>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>2. Select Resources</h2>
+        <p>Pick videos, images, and readings to include.</p>
+      </div>
+      <div id="resourceList" class="card-grid"></div>
     </section>
 
-    <section id="carePlanSection">
-      <h2>Care Plan</h2>
-      <button id="generatePdfBtn">Generate PDF</button>
-      <button id="emailPdfBtn">Email PDF</button>
+    <section class="panel">
+      <div class="panel-header">
+        <h2>3. Care Plan Actions</h2>
+        <p>Generate and send the care plan to the client.</p>
+      </div>
+      <div class="actions-row">
+        <button id="generatePdfBtn" class="btn btn-secondary">
+          📄 Generate PDF
+        </button>
+        <button id="emailPdfBtn" class="btn btn-accent">
+          ✉️ Email PDF
+        </button>
+      </div>
+      <div id="statusArea" class="status-area"></div>
     </section>
 
   </main>
+
+  <footer class="app-footer">
+    <span>Care Plan Builder · Powered by Google Apps Script</span>
+  </footer>
 
   <script src="app.js"></script>
 </body>
