@@ -1,12 +1,12 @@
-// 🔗 Your deployed Apps Script Web App URL (UPDATED)
+// 🔗 Your deployed Apps Script Web App URL
 const API = "https://script.google.com/macros/s/AKfycbyXb8dYIEYQx0k27-aeKX61NZNK_t7lf7lDCla8OmgAd837Chu9kYv0GMhwWTa7VkrvrQ/exec";
 
 // 🔐 Shared secret API key (must match Apps Script)
 const API_KEY = "MY_SUPER_SECRET_KEY_9834hf9834hf9834hf9834hf";
 
 // State
-let selectedTopics = new Set();
-let selectedResources = new Set();
+let catalog = [];          // full list of resources from backend
+let selectedItems = new Set(); // ids of selected items
 
 // Status helper
 function setStatus(message, type = "info") {
@@ -28,9 +28,12 @@ function getClientNotes() {
   return document.getElementById("clientNotes").value.trim();
 }
 
-// Sync button
-document.getElementById("syncBtn").onclick = () => {
+// Sync button with animation
+const syncBtn = document.getElementById("syncBtn");
+
+syncBtn.onclick = () => {
   setStatus("Syncing resources…");
+  startSyncAnimation();
 
   fetch(API, {
     method: "POST",
@@ -43,115 +46,207 @@ document.getElementById("syncBtn").onclick = () => {
     .then(data => {
       console.log("Sync complete:", data);
       setStatus("Resources synced successfully.");
-      loadTopics();
+      stopSyncAnimation(true);
+      loadCatalog();
     })
     .catch(err => {
       console.error(err);
       setStatus("Error syncing resources.", "error");
+      stopSyncAnimation(false);
     });
 };
 
-// Load topics
-function loadTopics() {
-  setStatus("Loading topics…");
-
-  fetch(API, {
-    method: "POST",
-    body: JSON.stringify({
-      apiKey: API_KEY,
-      action: "getTopics"
-    })
-  })
-    .then(r => r.json())
-    .then(topics => {
-      const container = document.getElementById("topicList");
-      container.innerHTML = "";
-      selectedTopics.clear();
-
-      topics.forEach(topic => {
-        const chip = document.createElement("div");
-        chip.className = "chip";
-        chip.textContent = topic;
-
-        chip.onclick = () => {
-          if (selectedTopics.has(topic)) {
-            selectedTopics.delete(topic);
-            chip.classList.remove("selected");
-          } else {
-            selectedTopics.add(topic);
-            chip.classList.add("selected");
-          }
-          loadResources();
-        };
-
-        container.appendChild(chip);
-      });
-
-      setStatus("Topics loaded.");
-    })
-    .catch(err => {
-      console.error(err);
-      setStatus("Error loading topics.", "error");
-    });
+function startSyncAnimation() {
+  syncBtn.classList.add("btn-loading");
+  syncBtn.classList.remove("btn-success");
+  syncBtn.innerHTML = `<span>Syncing…</span>`;
 }
 
-// Load resources
-function loadResources() {
-  const topicsArray = Array.from(selectedTopics);
-  setStatus("Loading resources…");
+function stopSyncAnimation(success) {
+  syncBtn.classList.remove("btn-loading");
+  if (success) {
+    syncBtn.classList.add("btn-success");
+    syncBtn.textContent = "✓ Synced";
+    setTimeout(() => {
+      syncBtn.classList.remove("btn-success");
+      syncBtn.textContent = "⟳ Sync Resources";
+    }, 2000);
+  } else {
+    syncBtn.textContent = "⟳ Sync Resources";
+  }
+}
+
+// Load catalog (all resources) and build category tree
+function loadCatalog() {
+  setStatus("Loading catalog…");
 
   fetch(API, {
     method: "POST",
     body: JSON.stringify({
       apiKey: API_KEY,
       action: "getResources",
-      topics: topicsArray
+      topics: [] // empty = all
     })
   })
     .then(r => r.json())
     .then(resources => {
-      const container = document.getElementById("resourceList");
-      container.innerHTML = "";
-      selectedResources.clear();
-
-      resources.forEach(res => {
-        const card = document.createElement("div");
-        card.className = "resource-card";
-
-        card.innerHTML = `
-          <div class="resource-title">${res.title || "Untitled resource"}</div>
-          <div class="resource-meta">
-            ${res.type || "Unknown type"} · ${res.topic || ""}
-          </div>
-        `;
-
-        const key = res.id || res.title;
-
-        card.onclick = () => {
-          if (selectedResources.has(key)) {
-            selectedResources.delete(key);
-            card.classList.remove("selected");
-          } else {
-            selectedResources.add(key);
-            card.classList.add("selected");
-          }
-        };
-
-        container.appendChild(card);
-      });
-
-      setStatus("Resources loaded.");
+      catalog = resources || [];
+      selectedItems.clear();
+      buildCategoryTree();
+      setStatus("Catalog loaded.");
     })
     .catch(err => {
       console.error(err);
-      setStatus("Error loading resources.", "error");
+      setStatus("Error loading catalog.", "error");
     });
+}
+
+// Build category tree UI
+function buildCategoryTree() {
+  const container = document.getElementById("categoryList");
+  container.innerHTML = "";
+
+  // Group by topic (acts as category)
+  const categoriesMap = new Map();
+
+  catalog.forEach(res => {
+    const topic = res.topic || "Uncategorized";
+    if (!categoriesMap.has(topic)) {
+      categoriesMap.set(topic, []);
+    }
+    categoriesMap.get(topic).push(res);
+  });
+
+  categoriesMap.forEach((items, categoryName) => {
+    const categoryEl = document.createElement("div");
+    categoryEl.className = "category";
+
+    const headerEl = document.createElement("div");
+    headerEl.className = "category-header";
+
+    const checkboxEl = document.createElement("input");
+    checkboxEl.type = "checkbox";
+    checkboxEl.className = "category-checkbox";
+
+    const toggleEl = document.createElement("div");
+    toggleEl.className = "category-toggle";
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "category-title";
+    titleEl.textContent = categoryName;
+
+    const itemListEl = document.createElement("div");
+    itemListEl.className = "item-list";
+
+    // Build items
+    items.forEach(res => {
+      const rowEl = document.createElement("div");
+      rowEl.className = "item-row";
+
+      const itemCheckbox = document.createElement("input");
+      itemCheckbox.type = "checkbox";
+
+      const key = res.id || res.title;
+      itemCheckbox.checked = selectedItems.has(key);
+
+      itemCheckbox.onchange = () => {
+        if (itemCheckbox.checked) {
+          selectedItems.add(key);
+        } else {
+          selectedItems.delete(key);
+        }
+        updateCategoryCheckboxState(checkboxEl, items);
+      };
+
+      const itemTitle = document.createElement("div");
+      itemTitle.className = "item-title";
+      itemTitle.textContent = res.title || "Untitled";
+
+      const itemMeta = document.createElement("div");
+      itemMeta.className = "item-meta";
+      itemMeta.textContent = `${res.type || "Unknown"} · ${categoryName}`;
+
+      rowEl.appendChild(itemCheckbox);
+      rowEl.appendChild(itemTitle);
+      rowEl.appendChild(itemMeta);
+
+      itemListEl.appendChild(rowEl);
+    });
+
+    // Category checkbox behavior
+    checkboxEl.onchange = () => {
+      const checked = checkboxEl.checked;
+      items.forEach(res => {
+        const key = res.id || res.title;
+        if (checked) {
+          selectedItems.add(key);
+        } else {
+          selectedItems.delete(key);
+        }
+      });
+      // Update all item checkboxes in this category
+      const itemCheckboxes = itemListEl.querySelectorAll("input[type='checkbox']");
+      itemCheckboxes.forEach(cb => {
+        cb.checked = checked;
+      });
+    };
+
+    // Toggle dropdown
+    headerEl.onclick = (e) => {
+      // avoid double-trigger when clicking checkbox
+      if (e.target === checkboxEl) return;
+      const isOpen = itemListEl.classList.toggle("open");
+      toggleEl.classList.toggle("open", isOpen);
+    };
+
+    headerEl.appendChild(checkboxEl);
+    headerEl.appendChild(toggleEl);
+    headerEl.appendChild(titleEl);
+
+    categoryEl.appendChild(headerEl);
+    categoryEl.appendChild(itemListEl);
+
+    container.appendChild(categoryEl);
+
+    // Initial category checkbox state
+    updateCategoryCheckboxState(checkboxEl, items);
+  });
+}
+
+// Update category checkbox to reflect item selection
+function updateCategoryCheckboxState(categoryCheckbox, items) {
+  let selectedCount = 0;
+  items.forEach(res => {
+    const key = res.id || res.title;
+    if (selectedItems.has(key)) selectedCount++;
+  });
+
+  if (selectedCount === 0) {
+    categoryCheckbox.indeterminate = false;
+    categoryCheckbox.checked = false;
+  } else if (selectedCount === items.length) {
+    categoryCheckbox.indeterminate = false;
+    categoryCheckbox.checked = true;
+  } else {
+    categoryCheckbox.indeterminate = true;
+  }
+}
+
+// Helper: get selected resource objects
+function getSelectedResources() {
+  const selected = [];
+  catalog.forEach(res => {
+    const key = res.id || res.title;
+    if (selectedItems.has(key)) {
+      selected.push(res);
+    }
+  });
+  return selected;
 }
 
 // Generate PDF
 document.getElementById("generatePdfBtn").onclick = () => {
-  const topicsArray = Array.from(selectedTopics);
-  const resourcesArray = Array.from(selectedResources);
+  const resourcesArray = getSelectedResources();
 
   const clientEmail = getClientEmail();
   const clientName = getClientName();
@@ -166,6 +261,15 @@ document.getElementById("generatePdfBtn").onclick = () => {
     setStatus("Please enter the client's email.", "error");
     return;
   }
+
+  if (resourcesArray.length === 0) {
+    setStatus("Please select at least one item.", "error");
+    return;
+  }
+
+  const topicsArray = Array.from(
+    new Set(resourcesArray.map(r => r.topic || "Uncategorized"))
+  );
 
   setStatus("Generating PDF…");
 
@@ -184,7 +288,11 @@ document.getElementById("generatePdfBtn").onclick = () => {
     .then(r => r.json())
     .then(data => {
       console.log("PDF generated:", data);
-      setStatus("PDF generated successfully.");
+      if (data.error) {
+        setStatus("Error generating PDF: " + data.error, "error");
+      } else {
+        setStatus("PDF generated successfully.");
+      }
     })
     .catch(err => {
       console.error(err);
@@ -194,8 +302,7 @@ document.getElementById("generatePdfBtn").onclick = () => {
 
 // Email PDF
 document.getElementById("emailPdfBtn").onclick = () => {
-  const topicsArray = Array.from(selectedTopics);
-  const resourcesArray = Array.from(selectedResources);
+  const resourcesArray = getSelectedResources();
 
   const clientEmail = getClientEmail();
   const clientName = getClientName();
@@ -210,6 +317,15 @@ document.getElementById("emailPdfBtn").onclick = () => {
     setStatus("Please enter the client's email.", "error");
     return;
   }
+
+  if (resourcesArray.length === 0) {
+    setStatus("Please select at least one item.", "error");
+    return;
+  }
+
+  const topicsArray = Array.from(
+    new Set(resourcesArray.map(r => r.topic || "Uncategorized"))
+  );
 
   setStatus("Emailing PDF…");
 
@@ -228,7 +344,11 @@ document.getElementById("emailPdfBtn").onclick = () => {
     .then(r => r.json())
     .then(data => {
       console.log("PDF emailed:", data);
-      setStatus("PDF emailed to client.");
+      if (data.error) {
+        setStatus("Error emailing PDF: " + data.error, "error");
+      } else {
+        setStatus("PDF emailed to client.");
+      }
     })
     .catch(err => {
       console.error(err);
@@ -238,5 +358,5 @@ document.getElementById("emailPdfBtn").onclick = () => {
 
 // Initial load
 window.onload = () => {
-  loadTopics();
+  loadCatalog();
 };
