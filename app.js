@@ -1,5 +1,5 @@
 // 🔗 Your deployed Apps Script Web App URL
-const API = "https://script.google.com/macros/s/AKfycbwtjG1GYjUdMTfIb1yRdb-cAN2jYUR3IccSgW1a4WAvSZGoU977h_DbXf3_7d4THLYZUg/exec";
+const API = "https://script.google.com/macros/s/AKfycbwK4KCtz-U_MCm2XbdNAEJBYIwDkXWcwtey7jODss2DfQSlO_0K2kCIF2WRZG5_1g8Irg/exec";
 
 // 🔐 Shared secret API key (must match Apps Script)
 const API_KEY = "MY_SUPER_SECRET_KEY_9834hf9834hf9834hf9834hf";
