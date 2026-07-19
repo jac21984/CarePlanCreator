@@ -1,0 +1,10 @@
+{
+  "name": "care-plan-pdf-function",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "googleapis": "^118.0.0",
+    "puppeteer": "^22.0.0"
+  }
+}
