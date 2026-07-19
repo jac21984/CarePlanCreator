@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Care Plan Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-title">Care Plan Manager</span>
+    </div>
+    <div class="header-right">
+      <span id="status" class="status-text">Backend: unknown</span>
+      <span id="activeDatabaseLabel" class="status-text"></span>
+      <button id="settingsBtn" class="icon-btn">⚙</button>
+      <button id="menuBtn" class="icon-btn">☰</button>
+    </div>
+  </header>
 
+  <nav id="headerMenu" class="header-menu hidden">
+    <button data-target="homePage">Home</button>
+    <button data-target="databasePage">Database Manager</button>
+    <button data-target="resourcePage">Resource Manager</button>
+    <button data-target="carePlanPage">Care Plan Builder</button>
+  </nav>
+
+  <main>
+    <!-- Home Page -->
+    <section id="homePage" class="panel">
+      <h2>Home</h2>
+      <div id="homeNoDbMessage">
+        <p>You need to add or join a Database to proceed.</p>
+        <button id="goToDatabaseBtn">Go to Database Manager</button>
+      </div>
+      <div id="homeContent" class="hidden">
+        <div class="summary-row">
+          <span id="homeDbName"></span>
+          <span id="homeDbStats"></span>
+        </div>
+
+        <div class="quick-actions">
+          <button id="startCarePlanBtn" class="primary-btn">Start New Care Plan</button>
+          <button id="addResourceBtn" class="secondary-btn">Add Resource</button>
+          <button id="switchDatabaseBtn" class="secondary-btn">Switch Database</button>
+        </div>
+
+        <div class="recent-careplans">
+          <h3>Recent Care Plans</h3>
+          <ul id="recentCarePlansList"></ul>
+        </div>
+
+        <div class="system-status-row">
+          <span id="systemStatusIcon">?</span>
+          <span>System Status</span>
+          <span id="systemStatusPopup" class="popup-icon">⧉</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Database Manager -->
+    <section id="databasePage" class="panel hidden">
+      <h2>Database Manager</h2>
+      <p>Activate a database to use the app.</p>
+      <div id="databaseControls">
+        <button id="activateDummyDbBtn">Activate Demo Database</button>
+      </div>
+    </section>
+
+    <!-- Resource Manager -->
+    <section id="resourcePage" class="panel hidden">
+      <h2>Resource Manager</h2>
+      <p>(Future: manage resources from your Resources folder.)</p>
+    </section>
+
+    <!-- Care Plan Builder -->
+    <section id="carePlanPage" class="panel hidden">
+      <h2>Care Plan Builder</h2>
+      <div id="carePlanBuilderContainer">
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="cpClientName">
+        </div>
+        <div class="form-group">
+          <label>Client Email</label>
+          <input type="email" id="cpClientEmail">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="cpNotes"></textarea>
+        </div>
+        <button id="cpGeneratePdfBtn" class="primary-btn">Generate Care Plan PDF</button>
+        <button id="cpSendEmailBtn" class="secondary-btn">Email Care Plan</button>
+        <div id="cpStatus"></div>
+      </div>
+    </section>
+
+    <!-- Settings Panel -->
+    <section id="settingsPanel" class="panel settings-panel hidden">
+      <h2>Settings</h2>
+
+      <h3>Email Preferences</h3>
+      <div class="form-group">
+        <label for="settingsSignatureInput">Email signature</label>
+        <textarea id="settingsSignatureInput" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="settingsEmailTemplateSelect">Email template style</label>
+        <select id="settingsEmailTemplateSelect">
+          <option value="clinical">Clinical</option>
+          <option value="friendly">Friendly</option>
+          <option value="minimalist">Minimalist</option>
+        </select>
+      </div>
+
+      <h3>PDF Branding</h3>
+      <div class="form-group">
+        <label for="settingsPdfHeaderInput">PDF header text</label>
+        <input type="text" id="settingsPdfHeaderInput" placeholder="Care Plan">
+      </div>
+
+      <div class="button-row">
+        <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
+        <button id="closeSettingsBtn" class="secondary-btn">Close</button>
+      </div>
+    </section>
+
+    <!-- System Status Modal -->
+    <div id="systemStatusModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>System Health Details</h3>
+        <ul id="systemHealthList"></ul>
+        <button id="closeSystemStatusModalBtn">Close</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="api.js"></script>
+  <script src="care-plan.js"></script>
+</body>
+</html>
