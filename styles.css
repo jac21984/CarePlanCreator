@@ -1,49 +1,51 @@
-body {
+/* RESET */
+* {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: system-ui, sans-serif;
+  background: #f7f9fc;
+  color: #1f2937;
+}
+
+/* HEADER */
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background: #1f2933;
+  background: #2563eb;
   color: #fff;
+  padding: 1rem;
 }
 
 .app-title {
+  font-size: 1.4rem;
   font-weight: 600;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-text {
-  font-size: 0.85rem;
 }
 
 .icon-btn {
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   cursor: pointer;
 }
 
+/* HAMBURGER MENU */
 .header-menu {
   position: absolute;
-  right: 1rem;
-  top: 3rem;
+  top: 60px;
+  right: 10px;
   background: #fff;
-  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  width: 200px;
   z-index: 20;
 }
 
@@ -52,111 +54,78 @@ body {
 }
 
 .header-menu button {
+  background: #f3f4f6;
   border: none;
-  background: #f5f5f5;
-  padding: 0.5rem;
+  padding: 0.75rem;
   text-align: left;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
-main {
-  padding: 1rem;
+.header-menu button:hover {
+  background: #e5e7eb;
+}
+
+/* MAIN */
+.main {
+  padding: 1.5rem;
 }
 
 .panel {
-  padding: 0.5rem 0;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 2rem;
 }
 
-.hidden {
-  display: none;
+.panel h2 {
+  margin-bottom: 1rem;
 }
 
+/* BUTTONS */
 .primary-btn {
   background: #2563eb;
   color: #fff;
   border: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 4px;
+  font-size: 1rem;
 }
 
 .secondary-btn {
   background: #e5e7eb;
   color: #111827;
   border: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 4px;
+  font-size: 1rem;
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.quick-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.recent-careplans ul {
-  list-style: none;
-  padding: 0;
-}
-
-.system-status-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.popup-icon {
-  cursor: pointer;
-  font-size: 1.1rem;
-  opacity: 0.8;
-}
-
-.popup-icon:hover {
-  opacity: 1;
-}
-
-.settings-panel {
-  position: fixed;
-  right: 1rem;
-  top: 4rem;
-  max-width: 420px;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  z-index: 30;
-}
-
+/* FORM */
 .form-group {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
-  display: block;
+  font-weight: 600;
   margin-bottom: 0.25rem;
+  display: block;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 0.35rem;
-  box-sizing: border-box;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
 }
 
-.button-row {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
+/* SYSTEM STATUS MODAL */
 .modal {
   position: fixed;
   inset: 0;
@@ -173,7 +142,7 @@ main {
 
 .modal-content {
   background: #fff;
-  padding: 1rem;
-  border-radius: 4px;
+  padding: 1.5rem;
+  border-radius: 12px;
   min-width: 280px;
 }
