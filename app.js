@@ -26,6 +26,22 @@ function initMenu() {
       menu.classList.add("hidden");
     });
   });
+
+  document.getElementById("goToDatabaseBtn").addEventListener("click", () => {
+    showPage("databasePage");
+  });
+
+  document.getElementById("startCarePlanBtn").addEventListener("click", () => {
+    showPage("carePlanPage");
+  });
+
+  document.getElementById("addResourceBtn").addEventListener("click", () => {
+    showPage("resourcePage");
+  });
+
+  document.getElementById("switchDatabaseBtn").addEventListener("click", () => {
+    showPage("databasePage");
+  });
 }
 
 /* HOME PAGE */
@@ -138,8 +154,6 @@ function initDatabaseManager() {
 
 /* SETTINGS */
 function initSettingsPanel() {
-  const panel = document.getElementById("settingsPanel");
-
   document.getElementById("saveSettingsBtn").addEventListener("click", () => {
     settings.defaultSignature = document.getElementById("settingsSignatureInput").value;
     settings.defaultEmailTemplate = document.getElementById("settingsEmailTemplateSelect").value;
@@ -150,12 +164,30 @@ function initSettingsPanel() {
   });
 }
 
+/* RESOURCE MODES (simple stub) */
+function initResourceManager() {
+  const container = document.getElementById("resourceModeContainer");
+
+  document.getElementById("singleResourceModeBtn").addEventListener("click", () => {
+    container.innerHTML = "<p>Single Resource mode (future: form to add one resource).</p>";
+  });
+
+  document.getElementById("bulkResourceModeBtn").addEventListener("click", () => {
+    container.innerHTML = "<p>Bulk Upload mode (future: upload CSV or multiple files).</p>";
+  });
+
+  document.getElementById("urlResourceModeBtn").addEventListener("click", () => {
+    container.innerHTML = "<p>Add URL mode (future: add external links as resources).</p>";
+  });
+}
+
 /* INIT */
 document.addEventListener("DOMContentLoaded", async () => {
   initMenu();
   initSystemStatusModal();
   initDatabaseManager();
   initSettingsPanel();
+  initResourceManager();
   showPage("homePage");
 
   try {
