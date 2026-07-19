@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycby9i-D5spxfD7q3mrXPSlwoE8QdBw-t7bVpxUkmhTZ5-2KvaICmQ5AdvWPyp-pjcip2Zg/exec"; // e.g. https://script.google.com/macros/s/AKfycbx.../exec
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycby9i-D5spxfD7q3mrXPSlwoE8QdBw-t7bVpxUkmhTZ5-2KvaICmQ5AdvWPyp-pjcip2Zg/exec";
 
 async function pingBackend() {
   const res = await fetch(BACKEND_URL);
