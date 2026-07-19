@@ -5,12 +5,13 @@ let settings = {
   defaultPdfBranding: { headerText: "Care Plan" }
 };
 
+/* NAVIGATION */
 function showPage(id) {
   document.querySelectorAll("main .panel").forEach(p => p.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
 
-function initHeaderMenu() {
+function initMenu() {
   const menuBtn = document.getElementById("menuBtn");
   const menu = document.getElementById("headerMenu");
 
@@ -25,24 +26,9 @@ function initHeaderMenu() {
       menu.classList.add("hidden");
     });
   });
-
-  document.getElementById("goToDatabaseBtn").addEventListener("click", () => {
-    showPage("databasePage");
-  });
-
-  document.getElementById("startCarePlanBtn").addEventListener("click", () => {
-    showPage("carePlanPage");
-  });
-
-  document.getElementById("addResourceBtn").addEventListener("click", () => {
-    showPage("resourcePage");
-  });
-
-  document.getElementById("switchDatabaseBtn").addEventListener("click", () => {
-    showPage("databasePage");
-  });
 }
 
+/* HOME PAGE */
 function updateHomePage() {
   const noDb = document.getElementById("homeNoDbMessage");
   const content = document.getElementById("homeContent");
@@ -50,7 +36,6 @@ function updateHomePage() {
   if (!activeDatabase) {
     noDb.classList.remove("hidden");
     content.classList.add("hidden");
-    document.getElementById("activeDatabaseLabel").textContent = "";
     return;
   }
 
@@ -61,8 +46,6 @@ function updateHomePage() {
     `Active Database: ${activeDatabase.name}`;
   document.getElementById("homeDbStats").textContent =
     `Topics: ${activeDatabase.topicCount}  Resources: ${activeDatabase.resourceCount}`;
-  document.getElementById("activeDatabaseLabel").textContent =
-    `DB: ${activeDatabase.name}`;
 
   const list = document.getElementById("recentCarePlansList");
   list.innerHTML = "";
@@ -73,24 +56,24 @@ function updateHomePage() {
   });
 }
 
+/* SYSTEM STATUS */
 function checkSystemStatus() {
   const icon = document.getElementById("systemStatusIcon");
   const healthList = document.getElementById("systemHealthList");
   healthList.innerHTML = "";
 
-  const checks = [];
+  const checks = [
+    { name: "Backend", ok: !!window.BACKEND_STATUS_OK },
+    { name: "Database", ok: !!activeDatabase },
+    { name: "PDF Generator", ok: true },
+    { name: "Email Sender", ok: true }
+  ];
 
-  checks.push({ name: "Backend", ok: !!window.BACKEND_STATUS_OK, message: window.BACKEND_STATUS_OK ? "Reachable" : "Not checked yet" });
-  checks.push({ name: "Output folder", ok: !!activeDatabase, message: activeDatabase ? "Configured" : "No active database" });
-  checks.push({ name: "PDF Generator", ok: true, message: "Doc → PDF via Apps Script" });
-  checks.push({ name: "Email Sender", ok: true, message: "MailApp via Apps Script" });
-
-  const allOk = checks.every(c => c.ok);
-  icon.textContent = allOk ? "✔" : "✖";
+  icon.textContent = checks.every(c => c.ok) ? "✔" : "✖";
 
   checks.forEach(c => {
     const li = document.createElement("li");
-    li.textContent = `${c.name}: ${c.ok ? "✔" : "✖"} ${c.message}`;
+    li.textContent = `${c.name}: ${c.ok ? "✔" : "✖"}`;
     healthList.appendChild(li);
   });
 }
@@ -110,9 +93,9 @@ function initSystemStatusModal() {
   });
 }
 
-function initDatabaseManagerStub() {
-  const btn = document.getElementById("activateDummyDbBtn");
-  btn.addEventListener("click", () => {
+/* DATABASE MANAGER */
+function initDatabaseManager() {
+  document.getElementById("activateDummyDbBtn").addEventListener("click", () => {
     activeDatabase = {
       name: "Apex (Primary)",
       topicCount: 12,
@@ -130,54 +113,55 @@ function initDatabaseManagerStub() {
     updateHomePage();
     showPage("homePage");
   });
+
+  document.getElementById("createDbBtn").addEventListener("click", async () => {
+    const name = document.getElementById("newDbName").value.trim();
+    const status = document.getElementById("createDbStatus");
+
+    if (!name) {
+      status.textContent = "Enter a database name.";
+      return;
+    }
+
+    status.textContent = "Creating database...";
+
+    try {
+      const result = await apiCreateDatabase(name);
+      activeDatabase = result.database;
+      updateHomePage();
+      status.textContent = "Database created.";
+    } catch (e) {
+      status.textContent = "Error creating database.";
+    }
+  });
 }
 
+/* SETTINGS */
 function initSettingsPanel() {
-  const btn = document.getElementById("settingsBtn");
   const panel = document.getElementById("settingsPanel");
-  const saveBtn = document.getElementById("saveSettingsBtn");
-  const closeBtn = document.getElementById("closeSettingsBtn");
 
-  btn.addEventListener("click", () => {
-    document.getElementById("settingsSignatureInput").value = settings.defaultSignature || "";
-    document.getElementById("settingsEmailTemplateSelect").value = settings.defaultEmailTemplate || "clinical";
-    document.getElementById("settingsPdfHeaderInput").value =
-      settings.defaultPdfBranding?.headerText || "Care Plan";
-    panel.classList.remove("hidden");
+  document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+    settings.defaultSignature = document.getElementById("settingsSignatureInput").value;
+    settings.defaultEmailTemplate = document.getElementById("settingsEmailTemplateSelect").value;
+    settings.defaultPdfBranding.headerText =
+      document.getElementById("settingsPdfHeaderInput").value;
+
+    alert("Settings saved.");
   });
-
-  saveBtn.addEventListener("click", () => {
-    const signature = document.getElementById("settingsSignatureInput").value;
-    const template = document.getElementById("settingsEmailTemplateSelect").value;
-    const headerText = document.getElementById("settingsPdfHeaderInput").value;
-
-    settings.defaultSignature = signature;
-    settings.defaultEmailTemplate = template;
-    settings.defaultPdfBranding = { headerText };
-
-    alert("Settings saved (in memory).");
-    panel.classList.add("hidden");
-  });
-
-  closeBtn.addEventListener("click", () => panel.classList.add("hidden"));
 }
 
+/* INIT */
 document.addEventListener("DOMContentLoaded", async () => {
-  initHeaderMenu();
+  initMenu();
   initSystemStatusModal();
-  initDatabaseManagerStub();
+  initDatabaseManager();
   initSettingsPanel();
   showPage("homePage");
 
-  // Ping backend
   try {
-    const status = document.getElementById("status");
     const res = await pingBackend();
     window.BACKEND_STATUS_OK = true;
-    status.textContent = "Backend OK (Apps Script).";
-  } catch (e) {
-    console.error(e);
+  } catch {
     window.BACKEND_STATUS_OK = false;
-    document.getElementById("status").textContent = "Backend error.";
   }
 });
