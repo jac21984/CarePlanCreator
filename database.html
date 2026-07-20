@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Database Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header class="app-header">
+    <span class="app-title">Database Manager</span>
+
+    <button id="hamburgerBtn" class="hamburger-btn">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </header>
+
+  <div id="hamburgerOverlay" class="hamburger-overlay"></div>
+
+  <nav id="hamburgerMenu" class="hamburger-menu">
+    <a class="menu-item" href="index.html">Home</a>
+    <a class="menu-item" href="client.html">Clients</a>
+    <a class="menu-item" href="database.html">Database Manager</a>
+    <a class="menu-item" href="resources.html">Resource Manager</a>
+    <a class="menu-item" href="settings.html">Settings</a>
+  </nav>
+
+  <main class="page-panel active">
+    <h2>Database Manager</h2>
+    <p>Manage your care plan databases.</p>
+
+    <div class="db-actions">
+      <button class="primary-btn">Create New Database</button>
+      <button class="primary-btn">Switch Database</button>
+    </div>
+
+    <div class="db-info">
+      <h3>Current Database</h3>
+      <p>Demo Database</p>
+
+      <ul class="db-meta">
+        <li>Topics: 12</li>
+        <li>Resources: 34</li>
+        <li>Output Folder: /output/demo</li>
+        <li>Catalog Sheet: DemoCatalog.xlsx</li>
+      </ul>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
