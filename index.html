@@ -2,162 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Care Plan Manager</title>
+  <title>Care Plan CRM – Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <!-- HEADER -->
   <header class="app-header">
-    <span class="app-title">Care Plan Manager</span>
-    <button id="menuBtn" class="icon-btn">☰</button>
+    <span class="app-title">Care Plan CRM</span>
+
+    <button id="hamburgerBtn" class="hamburger-btn">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
   </header>
 
-  <!-- HAMBURGER MENU -->
-  <nav id="headerMenu" class="header-menu hidden">
-    <button data-target="homePage">🏠 Home</button>
-    <button data-target="databasePage">📁 Database Manager</button>
-    <button data-target="resourcePage">📚 Resource Manager</button>
-    <button data-target="carePlanPage">📝 Care Plan Builder</button>
-    <button data-target="settingsPanel">⚙ Settings</button>
+  <div id="hamburgerOverlay" class="hamburger-overlay"></div>
+
+  <nav id="hamburgerMenu" class="hamburger-menu">
+    <a class="menu-item" href="index.html">Home</a>
+    <a class="menu-item" href="client.html">Clients</a>
+    <a class="menu-item" href="database.html">Database Manager</a>
+    <a class="menu-item" href="resources.html">Resource Manager</a>
+    <a class="menu-item" href="settings.html">Settings</a>
   </nav>
 
-  <!-- MAIN CONTENT -->
-  <main class="main">
+  <main class="page-panel active">
+    <h2>Home Overview</h2>
+    <p>Welcome to Care Plan CRM.</p>
 
-    <!-- HOME PAGE -->
-    <section id="homePage" class="panel">
-      <h2>Home</h2>
-
-      <div id="homeNoDbMessage">
-        <p>No database is active.</p>
-        <button id="goToDatabaseBtn" class="primary-btn">Go to Database Manager</button>
+    <div class="overview-stats">
+      <div class="stat-card">
+        <span class="stat-label">Total Clients</span>
+        <span class="stat-value">2</span>
       </div>
-
-      <div id="homeContent" class="hidden">
-        <div class="summary-row">
-          <span id="homeDbName"></span>
-          <span id="homeDbStats"></span>
-        </div>
-
-        <div class="quick-actions">
-          <button id="startCarePlanBtn" class="primary-btn">Create Care Plan</button>
-          <button id="addResourceBtn" class="secondary-btn">Add Resource</button>
-          <button id="switchDatabaseBtn" class="secondary-btn">Switch Database</button>
-        </div>
-
-        <div class="recent-careplans">
-          <h3>Recent Care Plans</h3>
-          <ul id="recentCarePlansList"></ul>
-        </div>
-
-        <div class="system-status-row">
-          <span id="systemStatusIcon">✔</span>
-          <span>System Status</span>
-          <span id="systemStatusPopup" class="popup-icon">⧉</span>
-        </div>
+      <div class="stat-card">
+        <span class="stat-label">Care Plans</span>
+        <span class="stat-value">3</span>
       </div>
-    </section>
-
-    <!-- DATABASE MANAGER -->
-    <section id="databasePage" class="panel hidden">
-      <h2>Database Manager</h2>
-
-      <div class="form-group">
-        <label>New Database Name</label>
-        <input type="text" id="newDbName">
-      </div>
-      <button id="createDbBtn" class="primary-btn">Create Database</button>
-      <div id="createDbStatus"></div>
-
-      <hr style="margin: 2rem 0;">
-
-      <h3>Activate Existing Database</h3>
-      <button id="activateDummyDbBtn" class="secondary-btn">Activate Demo Database</button>
-    </section>
-
-    <!-- RESOURCE MANAGER -->
-    <section id="resourcePage" class="panel hidden">
-      <h2>Resource Manager</h2>
-
-      <div class="resource-modes">
-        <button id="singleResourceModeBtn" class="secondary-btn">Single Resource</button>
-        <button id="bulkResourceModeBtn" class="secondary-btn">Bulk Upload</button>
-        <button id="urlResourceModeBtn" class="secondary-btn">Add URL</button>
-      </div>
-
-      <div id="resourceModeContainer">
-        <p>Select a mode above.</p>
-      </div>
-    </section>
-
-    <!-- CARE PLAN BUILDER -->
-    <section id="carePlanPage" class="panel hidden">
-      <h2>Care Plan Builder</h2>
-
-      <div class="form-group">
-        <label>Client Name</label>
-        <input type="text" id="cpClientName">
-      </div>
-
-      <div class="form-group">
-        <label>Client Email</label>
-        <input type="email" id="cpClientEmail">
-      </div>
-
-      <div class="form-group">
-        <label>Notes</label>
-        <textarea id="cpNotes"></textarea>
-      </div>
-
-      <button id="cpGeneratePdfBtn" class="primary-btn">Generate PDF</button>
-      <button id="cpSendEmailBtn" class="secondary-btn">Email Care Plan</button>
-
-      <div id="cpStatus"></div>
-    </section>
-
-    <!-- SETTINGS -->
-    <section id="settingsPanel" class="panel hidden">
-      <h2>Settings</h2>
-
-      <div class="form-group">
-        <label>Email Signature</label>
-        <textarea id="settingsSignatureInput"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Email Template</label>
-        <select id="settingsEmailTemplateSelect">
-          <option value="clinical">Clinical</option>
-          <option value="friendly">Friendly</option>
-          <option value="minimalist">Minimalist</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>PDF Header Text</label>
-        <input type="text" id="settingsPdfHeaderInput" placeholder="Care Plan">
-      </div>
-
-      <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
-    </section>
-
-    <!-- SYSTEM STATUS MODAL -->
-    <div id="systemStatusModal" class="modal hidden">
-      <div class="modal-content">
-        <h3>System Health</h3>
-        <ul id="systemHealthList"></ul>
-        <button id="closeSystemStatusModalBtn" class="secondary-btn">Close</button>
+      <div class="stat-card">
+        <span class="stat-label">Resources</span>
+        <span class="stat-value">3</span>
       </div>
     </div>
-
   </main>
 
   <script src="app.js"></script>
-  <script src="api.js"></script>
-  <script src="care-plan.js"></script>
-
 </body>
 </html>
