@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Care Plan CRM – Clients</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header class="app-header">
+    <span class="app-title">Care Plan CRM</span>
+
+    <button id="mobileClientToggle" class="icon-btn mobile-only">Clients ▾</button>
+
+    <button id="hamburgerBtn" class="hamburger-btn">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </header>
+
+  <div id="hamburgerOverlay" class="hamburger-overlay"></div>
+
+  <nav id="hamburgerMenu" class="hamburger-menu">
+    <a class="menu-item" href="index.html">Home</a>
+    <a class="menu-item" href="client.html">Clients</a>
+    <a class="menu-item" href="database.html">Database Manager</a>
+    <a class="menu-item" href="resources.html">Resource Manager</a>
+    <a class="menu-item" href="settings.html">Settings</a>
+  </nav>
+
+  <main class="crm-layout">
+
+    <aside class="client-list-panel">
+      <h2>Clients</h2>
+      <ul id="clientList"></ul>
+    </aside>
+
+    <section class="client-detail-panel">
+
+      <div class="mobile-client-selector mobile-only">
+        <select id="mobileClientSelect"></select>
+      </div>
+
+      <div class="client-header">
+        <div>
+          <h2 id="clientNameDisplay">Select a client</h2>
+          <p id="clientEmailDisplay"></p>
+        </div>
+        <div class="client-header-actions">
+          <button id="newCarePlanBtn" class="primary-btn">New Care Plan</button>
+          <button id="emailClientBtn" class="secondary-btn">Email Client</button>
+        </div>
+      </div>
+
+      <nav class="detail-tabs desktop-only">
+        <button data-tab="overviewTab" class="tab-btn active">Overview</button>
+        <button data-tab="carePlansTab" class="tab-btn">Care Plans</button>
+        <button data-tab="resourcesTab" class="tab-btn">Resources</button>
+        <button data-tab="notesTab" class="tab-btn">Notes</button>
+        <button data-tab="actionsTab" class="tab-btn">Actions</button>
+      </nav>
+
+      <nav class="mobile-tabs mobile-only">
+        <button data-tab="overviewTab" class="tab-btn active">Overview</button>
+        <button data-tab="carePlansTab" class="tab-btn">Plans</button>
+        <button data-tab="resourcesTab" class="tab-btn">Resources</button>
+        <button data-tab="notesTab" class="tab-btn">Notes</button>
+        <button data-tab="actionsTab" class="tab-btn">Actions</button>
+      </nav>
+
+      <div class="tab-content">
+
+        <section id="overviewTab" class="tab-panel active">
+          <h3>Overview</h3>
+          <p id="clientOverviewText">Choose a client to see summary.</p>
+          <div class="overview-stats">
+            <div class="stat-card">
+              <span class="stat-label">Care Plans</span>
+              <span id="overviewCarePlanCount" class="stat-value">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Resources</span>
+              <span id="overviewResourceCount" class="stat-value">0</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Last Updated</span>
+              <span id="overviewLastUpdated" class="stat-value">—</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="carePlansTab" class="tab-panel">
+          <h3>Care Plans</h3>
+          <ul id="carePlanList"></ul>
+        </section>
+
+        <section id="resourcesTab" class="tab-panel">
+          <h3>Resources</h3>
+          <ul id="resourceList"></ul>
+        </section>
+
+        <section id="notesTab" class="tab-panel">
+          <h3>Notes</h3>
+          <textarea id="clientNotesInput" rows="6"></textarea>
+          <button id="saveNotesBtn" class="primary-btn">Save Notes</button>
+        </section>
+
+        <section id="actionsTab" class="tab-panel">
+          <h3>Actions</h3>
+          <button class="primary-btn">Generate Care Plan PDF</button>
+          <button class="secondary-btn">Send Latest Plan via Email</button>
+          <button class="secondary-btn">View Client Folder</button>
+        </section>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="api.js"></script>
+  <script src="care-plan.js"></script>
+</body>
+</html>
