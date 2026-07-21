@@ -1,4 +1,6 @@
-/* HAMBURGER MENU */
+/* -------------------------------------------------------
+   HAMBURGER MENU
+------------------------------------------------------- */
 const hamburgerBtn = document.getElementById("hamburgerBtn");
 const hamburgerMenu = document.getElementById("hamburgerMenu");
 const hamburgerOverlay = document.getElementById("hamburgerOverlay");
@@ -15,7 +17,9 @@ if (hamburgerBtn && hamburgerMenu && hamburgerOverlay) {
   });
 }
 
-/* CRM LOGIC (only runs on client.html) */
+/* -------------------------------------------------------
+   CRM LOGIC (only runs on client.html)
+------------------------------------------------------- */
 if (document.getElementById("clientList")) {
 
   const clients = [
@@ -51,6 +55,9 @@ if (document.getElementById("clientList")) {
 
   let activeClientId = null;
 
+  /* -------------------------------------------------------
+     RENDER CLIENT LIST (desktop + mobile)
+  ------------------------------------------------------- */
   function renderClientList() {
     const listEl = document.getElementById("clientList");
     const mobileSelect = document.getElementById("mobileClientSelect");
@@ -72,6 +79,9 @@ if (document.getElementById("clientList")) {
     });
   }
 
+  /* -------------------------------------------------------
+     SELECT CLIENT
+  ------------------------------------------------------- */
   function selectClient(id) {
     activeClientId = id;
     const client = clients.find(c => c.id === id);
@@ -85,3 +95,79 @@ if (document.getElementById("clientList")) {
     document.getElementById("clientNameDisplay").textContent = client.name;
     document.getElementById("clientEmailDisplay").textContent = client.email;
     document.getElementById("clientOverviewText").textContent = client.overview;
+
+    document.getElementById("overviewCarePlanCount").textContent = client.carePlans.length;
+    document.getElementById("overviewResourceCount").textContent = client.resources.length;
+    document.getElementById("overviewLastUpdated").textContent = "Today";
+
+    renderCarePlans(client);
+    renderResources(client);
+    document.getElementById("clientNotesInput").value = client.notes;
+  }
+
+  /* -------------------------------------------------------
+     RENDER CARE PLANS
+  ------------------------------------------------------- */
+  function renderCarePlans(client) {
+    const list = document.getElementById("carePlanList");
+    list.innerHTML = "";
+
+    client.carePlans.forEach(plan => {
+      const li = document.createElement("li");
+      li.textContent = `${plan.title} — ${plan.date} (${plan.status})`;
+      list.appendChild(li);
+    });
+  }
+
+  /* -------------------------------------------------------
+     RENDER RESOURCES
+  ------------------------------------------------------- */
+  function renderResources(client) {
+    const list = document.getElementById("resourceList");
+    list.innerHTML = "";
+
+    client.resources.forEach(r => {
+      const li = document.createElement("li");
+      li.textContent = `${r.title} (${r.type})`;
+      list.appendChild(li);
+    });
+  }
+
+  /* -------------------------------------------------------
+     SAVE NOTES
+  ------------------------------------------------------- */
+  document.getElementById("saveNotesBtn").addEventListener("click", () => {
+    if (!activeClientId) return;
+    const client = clients.find(c => c.id === activeClientId);
+    client.notes = document.getElementById("clientNotesInput").value;
+    alert("Notes saved.");
+  });
+
+  /* -------------------------------------------------------
+     MOBILE SELECT HANDLER
+  ------------------------------------------------------- */
+  document.getElementById("mobileClientSelect").addEventListener("change", (e) => {
+    if (e.target.value) selectClient(e.target.value);
+  });
+
+  /* -------------------------------------------------------
+     TAB SWITCHING
+  ------------------------------------------------------- */
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      document.querySelectorAll(".tab-panel").forEach(panel => {
+        panel.classList.toggle("active", panel.id === tab);
+      });
+    });
+  });
+
+  /* -------------------------------------------------------
+     INITIALIZE
+  ------------------------------------------------------- */
+  renderClientList();
+}
